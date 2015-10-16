@@ -1,0 +1,115 @@
+
+//create global variables
+var numberOfMoves = 0;
+var tileFlipped = "";
+var imageFlipped = "";
+var imageLookup = 0;
+
+//create an array of images that are behind the tiles
+var image_array = [
+    "sun.png",
+    "surf.png",
+    "moon.png",
+    "earth.png",
+    "snowboard.png",
+    "pumpkin.png",
+    "dog.png",
+    "beach.png",
+    "tree.png",
+    "skull.png"
+];
+
+
+//randomize/shuffle deck
+// Returns a random integer between min (included) and max (excluded)
+// Using Math.round() will give you a non-uniform distribution
+function shuffle(max, min) {
+    return Math.round(Math.random() * (max - min) + min);
+}
+
+// randomize images in the array
+function randomImages() {
+    
+    //create variable for children of #tiles element
+    var allImages = $('#tiles').children();
+    var thisImage = $('#tiles' + " div:first-child");
+    var newImageArray = new Array();
+    //
+    for (var i = 0; i < allImages.length; i++) {
+        newImageArray[i] = $("#" + thisImage.attr("id") + " img").attr("src");
+        thisImage = thisImage.next();
+    }
+    
+    thisImage = $('#tiles' + " div:first-child");
+    
+    for (var z = 0; z < allImages.length; z++) {
+        var random = shuffle(0, newImageArray.length - 1);
+        
+        $("#" + thisImage.attr("id") + " img").attr("src", newImageArray[random]);
+        newImageArray.splice(random, 1);
+        thisImage = thisImage.next();
+    }
+}
+
+// flip cards, number of moves shown, checks for matches and game complete
+function flipTile() {
+    
+    var id = $(this).attr("id");
+    
+    if ($("#" + id + " img").is(":hidden")) {
+        $('#tiles' + " div").unbind("click", flipTile);
+        
+        $("#" + id + " img").slideDown('fast');
+        
+        if (imageFlipped == "") {
+            tileFlipped = id;
+            imageFlipped = $("#" + id + " img").attr("src");
+            setTimeout(function() {
+                $('#tiles' + " div").bind("click", flipTile)
+            }, 400);
+        } else {
+            current = $("#" + id + " img").attr("src");
+            
+            if (imageFlipped != current) {
+                setTimeout(function() {
+                    $("#" + id + " img").slideUp('fast');
+                    $("#" + tileFlipped + " img").slideUp('fast');
+                    tileFlipped = "";
+                    imageFlipped = "";
+                }, 500);
+            } else {
+                $("#" + id + " img").parent().css("visibility", "hidden");
+                $("#" + tileFlipped + " img").parent().css("visibility", "hidden");
+                imageLookup++;
+                
+                tileFlipped = "";
+                imageFlipped = "";
+            }
+            setTimeout(function() {
+                $('#tiles' + " div").bind("click", flipTile)
+            }, 500);
+        }
+        
+        numberOfMoves++;
+        $("#numberOfMoves").html("" + numberOfMoves);
+        
+        // if all cards are flipped, display confirmation message
+        if (imageLookup == image_array.length) {
+            $("#memoryBoard").append('<div id="finished">Good Job!</div>');
+        }
+    }
+}
+
+// Run the game
+$(function() {
+    
+    for (var y = 1; y < 3 ; y++) {
+        $.each(image_array, function(i, val) {
+            $('#tiles').append("<div id=card" + y + i + "><img src=" + val + " />");
+        });
+    }
+    
+    $('#tiles' + " div").click(flipTile);
+    randomImages();
+    
+});

@@ -5,7 +5,7 @@ var tileFlipped = "";
 var imageFlipped = "";
 var imageLookup = 0;
 
-//create an array of images that are behind the tiles
+//create an array of images that are hidden behind the tiles
 var image_array = [
     "sun.png",
     "surf.png",
@@ -55,12 +55,12 @@ function randomImages() {
 function flipTile() {
     
     var id = $(this).attr("id");
-    
+    //flip card when clicked
     if ($("#" + id + " img").is(":hidden")) {
         $('#tiles' + " div").unbind("click", flipTile);
         
         $("#" + id + " img").slideDown('fast');
-        
+        //
         if (imageFlipped == "") {
             tileFlipped = id;
             imageFlipped = $("#" + id + " img").attr("src");
@@ -70,6 +70,7 @@ function flipTile() {
         } else {
             current = $("#" + id + " img").attr("src");
             
+            //if the cards aren't a match, flip them back and reset their values to empty
             if (imageFlipped != current) {
                 setTimeout(function() {
                     $("#" + id + " img").slideUp('fast');
@@ -78,8 +79,8 @@ function flipTile() {
                     imageFlipped = "";
                 }, 500);
             } else {
-                $("#" + id + " img").parent().css("visibility", "hidden");
-                $("#" + tileFlipped + " img").parent().css("visibility", "hidden");
+                $("#" + id + " img").parent().css("hidden");
+                $("#" + tileFlipped + " img").parent().css("hidden");
                 imageLookup++;
                 
                 tileFlipped = "";

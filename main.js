@@ -1,5 +1,5 @@
 
-//create global variables
+//create global variables for the board, number of moves, and array of images
 var numberOfMoves = 0;
 var tileFlipped = "";
 var imageFlipped = "";
@@ -51,7 +51,28 @@ function randomImages() {
     }
 }
 
-// flip cards, number of moves shown, checks for matches and game complete
+//resets the game
+/*function reset() {
+     
+    randomImages();
+     
+    $(gameBoard + " div img").hide();
+    $(gameBoard + " div").css(visible");
+     
+    $("#finished").remove();
+     
+    numberOfMoves = 0;
+    $("#numberOfMoves").html("" + numberOfMoves);
+     
+    tileFlipped = "";
+    imageFlipped = "";
+    imageLookup = 0;
+     
+    return false;
+}
+*/
+
+// show/hide cards, number of moves shown, checks for matches and game complete
 function flipTile() {
     
     var id = $(this).attr("id");
@@ -60,7 +81,8 @@ function flipTile() {
         $('#tiles' + " div").unbind("click", flipTile);
         
         $("#" + id + " img").slideDown('fast');
-        //
+        
+        //display images
         if (imageFlipped == "") {
             tileFlipped = id;
             imageFlipped = $("#" + id + " img").attr("src");
@@ -70,7 +92,7 @@ function flipTile() {
         } else {
             current = $("#" + id + " img").attr("src");
             
-            //if the cards aren't a match, flip them back and reset their values to empty
+            //matching logic
             if (imageFlipped != current) {
                 setTimeout(function() {
                     $("#" + id + " img").slideUp('fast');
